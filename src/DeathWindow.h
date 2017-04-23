@@ -1,5 +1,6 @@
-
-
+#include <CheckBox.h>
+#include <ListView.h>
+#include <Window.h>
 
 class DeathWindow : public BWindow {
 
@@ -17,5 +18,3 @@ class DeathWindow : public BWindow {
 		BCheckBox *CloseCheck;
 
 };
-
-

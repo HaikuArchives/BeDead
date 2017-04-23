@@ -1,14 +1,11 @@
+#include "DeathWindow.h"
+
 #include <Application.h>
-#include <Window.h>
-#include <ListView.h>
 #include <ScrollView.h>
-#include <CheckBox.h>
 #include <Roster.h>
 #include <Messenger.h>
 #include <OS.h>
 #include <Beep.h>
-
-#include "DeathWindow.h"
 
 
 const uint32 KILL_KILL_KILL = 'KiLL';
@@ -23,7 +20,7 @@ DeathWindow::DeathWindow() : BWindow(BRect(100,100,400,400),"BeDead",B_TITLED_WI
 	BMessage *KiLL=new BMessage(KILL_KILL_KILL);
 	DeathList->SetInvocationMessage(KiLL);
 
-	CloseCheck=new BCheckBox(BRect(15,260,200,280),"CloseCheck","Close on Kill",new BMessage(B_OK));
+	CloseCheck=new BCheckBox(BRect(15,260,200,280),"CloseCheck","Close on Kill", NULL);
 	CloseCheck->SetValue(B_CONTROL_ON);
 		
 	DeathList->AttachedToWindow();
