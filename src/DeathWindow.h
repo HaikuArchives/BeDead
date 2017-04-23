@@ -17,8 +17,8 @@ protected:
 		void		AddApps(BListView *DeathList);
 		void		KillApp(BListView *DeathList, int32 index);
 		
-		BListView	*DeathList;
-		BCheckBox	*CloseCheck;
+		BListView*	DeathList;
+		BCheckBox*	CloseCheck;
 
 };
 

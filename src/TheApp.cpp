@@ -13,6 +13,7 @@ TheApp::TheApp()
 	BApplication(kAppSignature)
 {
 	fMainWindow = new DeathWindow();
+	fMainWindow->Show();
 }
 
 
