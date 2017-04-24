@@ -3,6 +3,8 @@
 
 #include <CheckBox.h>
 #include <ListView.h>
+#include <ScrollView.h>
+#include <View.h>
 #include <Window.h>
 
 class DeathWindow : public BWindow {
@@ -10,16 +12,20 @@ public:
 				DeathWindow();
 				~DeathWindow();
 
-		virtual void	MessageReceived(BMessage *message);
+		virtual void	MessageReceived(BMessage* message);
 		virtual bool	QuitRequested();
 		
 protected:
-		void		AddApps(BListView *DeathList);
-		void		KillApp(BListView *DeathList, int32 index);
+		void		AddApps(BListView* DeathList);
+		void		KillApp(BListView* DeathList, int32 index);
 		
-		BListView*	DeathList;
-		BCheckBox*	CloseCheck;
+		static const uint32 kAppKill = 1000;
 
+		int32		fPIDIndex[10000];
+		BListView*	fDeathList;
+		BCheckBox*	fCloseCheck;
+		BView*		fBackView;
+		BScrollView*	fDeathScroll;
 };
 
 #endif

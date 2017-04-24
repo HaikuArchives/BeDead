@@ -2,49 +2,40 @@
 
 #include <Application.h>
 #include <Beep.h>
-#include <View.h>
 #include <LayoutBuilder.h>
 #include <Messenger.h>
 #include <OS.h>
 #include <Roster.h>
-#include <ScrollView.h>
-
-const uint32 KILL_KILL_KILL = 'KiLL';
-int32 PIDIndex[10000];
 
 
 DeathWindow::DeathWindow()
 	:
 	BWindow(BRect(), "BeDead", B_TITLED_WINDOW,
-			 B_AUTO_UPDATE_SIZE_LIMITS | B_WILL_ACCEPT_FIRST_CLICK)
+		B_AUTO_UPDATE_SIZE_LIMITS | B_WILL_ACCEPT_FIRST_CLICK)
 {
 	ResizeTo(300, 280);
 	CenterOnScreen();
 
-	BView* fBackView = new BView("BackView", B_WILL_DRAW);
+	fBackView = new BView("BackView", B_WILL_DRAW);
 	rgb_color bgcolor = ui_color(B_PANEL_BACKGROUND_COLOR);
 	fBackView->SetViewColor(bgcolor);
 
-	DeathList = new BListView("Death List", B_SINGLE_SELECTION_LIST,
-					B_WILL_DRAW);
+	fDeathList = new BListView("Death List", B_SINGLE_SELECTION_LIST,
+		B_WILL_DRAW);
 
-	BScrollView* DeathScroll = new BScrollView("scroll_death", DeathList,
-												B_WILL_DRAW, false, true);
-	DeathScroll->SetExplicitMinSize(BSize(260, 260));
+	fDeathScroll = new BScrollView("scroll_death", fDeathList,
+		B_WILL_DRAW, false, true);
+	fDeathScroll->SetExplicitMinSize(BSize(260, 260));
 
-	BMessage* KiLL = new BMessage(KILL_KILL_KILL);
-	DeathList->SetInvocationMessage(KiLL);
+	fDeathList->SetInvocationMessage(new BMessage(kAppKill));
 
-	CloseCheck = new BCheckBox("CloseCheck", "Close BeDead on Kill", NULL, NULL);
-	CloseCheck->SetValue(B_CONTROL_OFF);
-		
-	DeathList->AttachedToWindow();
-	CloseCheck->AttachedToWindow();
+	fCloseCheck = new BCheckBox("CloseCheck", "Close BeDead on Kill", NULL, NULL);
+	fCloseCheck->SetValue(B_CONTROL_OFF);
 
 	BLayoutBuilder::Group<>(fBackView, B_VERTICAL)
-		.Add(DeathScroll)
+		.Add(fDeathScroll)
 		.AddGroup(B_HORIZONTAL)
-			.Add(CloseCheck)
+			.Add(fCloseCheck)
 			.AddGlue()
 		.End()
 		.End();
@@ -55,7 +46,7 @@ DeathWindow::DeathWindow()
 			.Add(fBackView)
 			.End();
 
-	AddApps(DeathList);
+	AddApps(fDeathList);
 	
 	BMessenger mess(this);
 	be_roster->StartWatching(mess);
@@ -75,21 +66,26 @@ DeathWindow::MessageReceived(BMessage *message)
 {
 	switch(message->what) {
 		case B_SOME_APP_LAUNCHED:
-			DeathList->MakeEmpty();
-			AddApps(DeathList);		
+		{
+			fDeathList->MakeEmpty();
+			AddApps(fDeathList);
 			break;
+		}
 
 		case B_SOME_APP_QUIT:
-			DeathList->MakeEmpty();
-			AddApps(DeathList);		
+		{
+			fDeathList->MakeEmpty();
+			AddApps(fDeathList);
 			break;
+		}
 
-		case KILL_KILL_KILL:
-		{	int32 index;
+		case kAppKill:
+		{
+			int32 index;
 			message->FindInt32("index", &index);
-			KillApp(DeathList, index);
-			DeathList->MakeEmpty();
-			AddApps(DeathList);	
+			KillApp(fDeathList, index);
+			fDeathList->MakeEmpty();
+			AddApps(fDeathList);
 			break;
 		}
 
@@ -107,8 +103,9 @@ DeathWindow::QuitRequested()
 	return true;
 }
 
+
 void
-DeathWindow::AddApps(BListView *DeathList)
+DeathWindow::AddApps(BListView* DeathList)
 {
 	BList* PIDList = new BList;
 	
@@ -120,7 +117,7 @@ DeathWindow::AddApps(BListView *DeathList)
 		team = (team_id)PIDList->ItemAt(lcount);
 		be_roster->GetRunningAppInfo(team, &appInfo);
 		DeathList->AddItem(new BStringItem(appInfo.signature));
-		PIDIndex[lcount] = appInfo.team;
+		fPIDIndex[lcount] = appInfo.team;
 	}
 }
 
@@ -128,7 +125,7 @@ DeathWindow::AddApps(BListView *DeathList)
 void
 DeathWindow::KillApp(BListView* DeathList, int32 index)
 {
-	kill_team(PIDIndex[index]);
-	if(CloseCheck->Value())
+	kill_team(fPIDIndex[index]);
+	if (fCloseCheck->Value())
 		be_app->PostMessage(B_QUIT_REQUESTED);
 }
