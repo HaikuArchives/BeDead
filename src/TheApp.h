@@ -1,3 +1,7 @@
+/*
+ * Copyright 1999 John Foerch, retroj@iserv.net
+ * All rights reserved.
+ */
 #ifndef __THEAPP__
 #define __THEAPP__
 

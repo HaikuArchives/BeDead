@@ -1,3 +1,8 @@
+/*
+ * Copyright 1999 John Foerch, retroj@iserv.net
+ * All rights reserved.
+ */
+
 #include "DeathWindow.h"
 
 #include <Application.h>
