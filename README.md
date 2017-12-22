@@ -2,6 +2,9 @@
 BeDead 1.0
 John Foerch
 ---------------------
+
+![BeDead screenshot](BeDead.png "BeDead")
+
 Summary:
 
 Version: 1.0
